@@ -1,9 +1,13 @@
 import tensorflow as tf
 from tensorflow.keras import layers, utils, models
 
+
 class CNN():
 
-    X_train, X_test, y_train, y_test = None
+    X_train = None
+    X_test = None
+    y_train = None
+    y_test = None
     model = None
 
 
@@ -22,7 +26,7 @@ class CNN():
     def buildModel(self):
         self.model = models.Sequential()
         self.model.add(layers.Conv2D(64, padding='same', strides=1, activation='relu',   
-                            kernel_size=(3, 3), input_size=()))
+                            kernel_size=(3, 3), input_size=(self.X_train[0].shape)))
         self.model.add(layers.MaxPool2D((2, 2)))
         self.model.add(layers.Conv2D(64, padding='same', strides=1, activation='relu',   
                             kernel_size=(3, 3)))

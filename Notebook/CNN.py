@@ -1,5 +1,7 @@
 import tensorflow as tf
-from tensorflow.keras import layers, utils, models
+from tensorflow.keras import layers, models
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
 class CNN():
@@ -8,6 +10,7 @@ class CNN():
     X_test = None
     y_train = None
     y_test = None
+    y_pred = None
     model = None
 
 
@@ -19,6 +22,10 @@ class CNN():
         self.buildModel()
         self.compileModel()
         self.fitModel()
+        self.predictModel()
+        self.reportModel()
+        self.visualization_metrics()
+        self.saveModel()
 
 
         
@@ -26,7 +33,7 @@ class CNN():
     def buildModel(self):
         self.model = models.Sequential()
         self.model.add(layers.Conv2D(64, padding='same', strides=1, activation='relu',   
-                            kernel_size=(3, 3), input_size=(self.X_train[0].shape)))
+                    kernel_size=(3, 3), input_shape=(self.X_train[0].shape), ))
         self.model.add(layers.MaxPool2D((2, 2)))
         self.model.add(layers.Conv2D(64, padding='same', strides=1, activation='relu',   
                             kernel_size=(3, 3)))
@@ -45,4 +52,17 @@ class CNN():
               )
         
     def fitModel(self):
-        self.model.fitModel(self.X_train, self.y_train, epochs=10, validation_data=(self.X_test, self.y_test))
+        self.model.fit(self.X_train, self.y_train, epochs=7, validation_data=(self.X_test, self.y_test))
+
+    def saveModel(self):
+        self.model.save('./models/cnn_model.h5')
+
+    def predictModel(self):
+        self.y_pred = self.model.predict(self.X_test)
+
+    def reportModel(self):
+        print(classification_report(self.y_test, self.y_pred))
+
+    def visualization_metrics(self):
+        metrics = confusion_matrix(self.y_test, self.y_pred)
+        ConfusionMatrixDisplay(metrics, self.model.classes_).plot()

@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 from tensorflow.keras import layers, models
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -58,7 +59,8 @@ class CNN():
         self.model.save('./models/cnn_model.h5')
 
     def predictModel(self):
-        self.y_pred = self.model.predict(self.X_test)
+        self.y_pred=self.model.predict(X_test) 
+        self.y_pred=np.argmax(self.y_pred, axis=1)
 
     def reportModel(self):
         print(classification_report(self.y_test, self.y_pred))
